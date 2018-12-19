@@ -1,0 +1,38 @@
+{
+  "name": "nn-component-library",
+  "version": "1.0.0",
+  "description": "Reusable components for data visualization produced by TWO-N",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass src/*.scss -o src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/two-n/nn-component-library.git"
+  },
+  "keywords": [
+    "dataviz",
+    "react"
+  ],
+  "author": "TWO-N, Inc.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/two-n/nn-component-library/issues"
+  },
+  "homepage": "https://github.com/two-n/nn-component-library#readme",
+  "dependencies": {
+    "d3-drag": "^1.2.3",
+    "d3-scale": "^2.1.2",
+    "d3-selection": "^1.3.2",
+    "prop-types": "^15.6.2"
+  },
+  "peerDependencies": {
+    "react": "^16.6.3"
+  },
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "eslint-plugin-react": "^7.11.1",
+    "node-sass": "^4.11.0"
+  }
+}

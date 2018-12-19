@@ -1,0 +1,35 @@
+.nnSliderComponent {
+  width: 100%;
+  /*display: block;*/
+  $nn-component-height: 8;
+
+  .nnSliderTrack {
+    width: 100%;
+    height: $nn-component-height * 1px;
+    border: 1px solid #888888;
+    border-radius: $nn-component-height / 2 * 1px;
+    position: relative;
+
+    .nnSliderProgress {
+      position: absolute;
+      left: 0px;
+      height: $nn-component-height - 2px;
+      border-radius: $nn-component-height / 2 * 1px;
+      background-color: #00ffff;
+    }
+
+    .nnSliderThumb {
+      $nn-thumb-spillover: 4;
+      $nn-thumb-dimension: $nn-component-height + (2 * $nn-thumb-spillover);
+      position: absolute;
+      margin-left: 0px - $nn-thumb-dimension/2;
+      top: 0px - $nn-thumb-spillover;
+      border-radius: $nn-thumb-dimension/2 * 1px;
+      background-color: #00ffff;
+      box-shadow: -1px 0px 2px 0px #888888;
+      width: $nn-thumb-dimension * 1px;
+      height: $nn-thumb-dimension * 1px;
+      cursor: pointer;
+    }
+  }
+}
