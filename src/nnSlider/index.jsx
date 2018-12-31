@@ -4,7 +4,7 @@ import {select, event} from "d3-selection"
 import {drag} from "d3-drag"
 import {scaleLinear} from "d3-scale"
 
-import "./nnSlider.css"
+import "./style.css"
 
 export class nnSlider extends Component {
 	constructor(props) {
