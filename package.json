@@ -5,7 +5,11 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "scss": "node-sass src/*/*.scss -o src/*/"
+    "build": "browserify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify src/main.jsx -o src/bundle.js",
+    "scss": "node-sass \"src/*/*.scss\" -o \"src/*/\"",
+    "watch-sass": "node-sass \"src/*/*.scss\" -o \"src/*/\"",
+    "watch-js": "watchify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify src/main.jsx -d -o src/bundle.js",
+    "watch": "npm run watch-sass & npm run watch-js"
   },
   "repository": {
     "type": "git",
@@ -25,14 +29,23 @@
     "d3-drag": "^1.2.3",
     "d3-scale": "^2.1.2",
     "d3-selection": "^1.3.2",
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0"
   },
   "peerDependencies": {
     "react": "^16.6.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "cssify": "^1.0.3",
     "eslint": "^5.10.0",
     "eslint-plugin-react": "^7.11.1",
-    "node-sass": "^4.11.0"
+    "node-sass": "^4.11.0",
+    "react-dom": "^16.7.0",
+    "watchify": "^3.11.0"
   }
 }
