@@ -1,15 +1,20 @@
 import React from "react"
 import { render } from "react-dom"
-import { NNSlider } from "./nnSlider/index.jsx"
+import { NNThreeInOne } from "./nnThreeInOne/index.jsx"
 
-let v = 0.7
+import data from "./nnThreeInOne/data.js"
 
 render(
-  <NNSlider
-  	value={v}
-		onDrag={e => v = e}
-		domain={[0,1]}
-		step={1} 
+  <NNThreeInOne
+		data={data} 
+		componentHeight={600}
+		componentWidth={900}
+		view={'heatmap'}
+		sizeKey={'High'}
+		colorKey={'Volume'}
+		label={true}
+		onHover={() => {}}
+		onClick={() => {}}
   />,
   document.getElementById("app")
 )

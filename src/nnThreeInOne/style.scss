@@ -1,0 +1,27 @@
+.nnThreeInOneComponent {
+  width: 100%;
+
+  .heatmap_card {
+    position: absolute;
+    
+    .heatmap_ticker {
+      margin: 5px 5px 5px 5px;
+      // margin-top: 2px;
+      // margin-left: 2px;
+      font-family: 'Arial';
+      font-size: 30px;
+    }
+    .heatmap_name {
+      margin: 5px 5px 5px 5px;
+      // margin-top: 2px;
+      // margin-left: 2px;
+      font-family: 'Arial';
+      font-size: 12px;
+    }
+  }
+
+  .bar_card {
+    position:absolute
+  }
+
+}
