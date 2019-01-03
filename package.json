@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/two-n/nn-component-library#readme",
   "dependencies": {
+    "d3-array": "^2.0.3",
     "d3-drag": "^1.2.3",
     "d3-scale": "^2.1.2",
     "d3-scale-chromatic": "^1.3.3",

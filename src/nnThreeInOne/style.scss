@@ -4,19 +4,15 @@
   .heatmap_card {
     position: absolute;
     
-    .heatmap_ticker {
+    .heatmap_label {
       margin: 5px 5px 5px 5px;
-      // margin-top: 2px;
-      // margin-left: 2px;
       font-family: 'Arial';
-      font-size: 30px;
+      font-size: 24px;
     }
-    .heatmap_name {
+    .heatmap_subLabel {
       margin: 5px 5px 5px 5px;
-      // margin-top: 2px;
-      // margin-left: 2px;
       font-family: 'Arial';
-      font-size: 12px;
+      font-size: 18px;
     }
   }
 
