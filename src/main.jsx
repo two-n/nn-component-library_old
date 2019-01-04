@@ -1,20 +1,11 @@
 import React from "react"
 import { render } from "react-dom"
 import { NNThreeInOne } from "./nnThreeInOne/index.jsx"
+import { NNThreeInOneParent } from "./nnThreeInOneParent/index.jsx"
 
-import data from "./nnThreeInOne/data.js"
+// import data from "./nnThreeInOne/data.js"
 
 render(
-  <NNThreeInOne
-		data={data} 
-		componentHeight={600}
-		componentWidth={900}
-		view={'heatmap'}
-		sizeKey={'High'}
-		colorKey={'Volume'}
-		label={true}
-		onHover={() => {}}
-		onClick={() => {}}
-  />,
+  <NNThreeInOneParent/>,
   document.getElementById("app")
 )

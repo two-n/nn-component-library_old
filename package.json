@@ -28,11 +28,13 @@
   "dependencies": {
     "d3-array": "^2.0.3",
     "d3-drag": "^1.2.3",
+    "d3-hierarchy": "^1.1.8",
     "d3-scale": "^2.1.2",
     "d3-scale-chromatic": "^1.3.3",
     "d3-selection": "^1.3.2",
     "prop-types": "^15.6.2",
-    "react": "^16.7.0"
+    "react": "^16.7.0",
+    "react-transition-group": "^2.5.2"
   },
   "peerDependencies": {
     "react": "^16.6.3"

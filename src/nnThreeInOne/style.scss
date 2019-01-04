@@ -3,6 +3,22 @@
 
   .heatmap_card {
     position: absolute;
+
+    &.fadeEnter {
+      opacity: 0.01;
+    }
+
+    &.fadeEnter {
+      opacity: 1;
+    }
+
+    &.fadeEnter {
+      opacity: 1;
+    }
+
+    &.fadeEnter {
+      opacity: 0.01;
+    }
     
     .heatmap_label {
       margin: 5px 5px 5px 5px;
@@ -17,7 +33,9 @@
   }
 
   .bar_card {
-    position:absolute
+    position: absolute;
+    float: left;
+    margin: 0px;
   }
 
 }
