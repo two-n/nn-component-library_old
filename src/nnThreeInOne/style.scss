@@ -1,41 +1,39 @@
 .nnThreeInOneComponent {
   width: 100%;
+  position: relative;
 
-  .heatmap_card {
+  .card {
     position: absolute;
+    transition-property: top, left, width, height, opacity;
+    transition-duration: 500ms;
 
-    &.fadeEnter {
+    &.fade-enter {
       opacity: 0.01;
     }
 
-    &.fadeEnter {
+    &.fade-enter-active {
       opacity: 1;
     }
 
-    &.fadeEnter {
+    &.fade-exit {
       opacity: 1;
     }
 
-    &.fadeEnter {
+    &.fade-exit-active {
       opacity: 0.01;
     }
-    
-    .heatmap_label {
+
+    .label {
       margin: 5px 5px 5px 5px;
       font-family: 'Arial';
       font-size: 24px;
     }
-    .heatmap_subLabel {
+    .subLabel {
       margin: 5px 5px 5px 5px;
       font-family: 'Arial';
       font-size: 18px;
     }
-  }
-
-  .bar_card {
-    position: absolute;
-    float: left;
-    margin: 0px;
+    
   }
 
 }

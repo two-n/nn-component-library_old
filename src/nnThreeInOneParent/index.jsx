@@ -2,35 +2,77 @@ import React from "react"
 import { NNThreeInOne } from "../nnThreeInOne/index.jsx"
 import data from "../nnThreeInOne/data.js"
 
+const views = ['bar', 'heatmap', 'treemap']
+
+const Constants = {
+  DATE: "Date",
+  OPEN: "Open",
+  HIGH: "High",
+  LOW: "Low",
+  CLOSE: "Close",
+  ADJCLOSE: "Adjusted_close",
+  VOLUME: "Volume"
+}
+const { DATE, OPEN, HIGH, LOW, CLOSE, ADJCLOSE, VOLUME } = Constants
+
 export class NNThreeInOneParent extends React.Component {
 
 	constructor(props) {
 		super(props)
 		this.state = {
-			view: "heatmap"
+			view: "heatmap",
+			componentWidth: null,
+			componentHeight: null
 		}
 		this.toggle = this.toggle.bind(this)
+		this.onResize = this.onResize.bind(this)
 	}
 
 	toggle() {
-		this.state.view === "heatmap" 
-			? this.setState({ view: "bar" })
-			: this.setState({ view: "heatmap" })
+		this.setState({ view: views[(views.indexOf(this.state.view) + 1) % 3] })
+	}
+
+	componentWillMount() {
+		window.addEventListener('resize', () => {
+			this.onResize()
+		})
+		this.onResize()
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('resize') // prevent memory leaks
+	}
+
+	onResize() {
+		this.setState({
+			componentHeight: Math.min(600, window.innerHeight),
+			componentWidth: Math.min(900, window.innerWidth)
+		})
 	}
 
 	render() {
+
+		let cleanData = data
+			.map(d => Object.assign({}, d,
+				{ [OPEN]: +d[OPEN],
+					[HIGH]: +d[HIGH],
+					[LOW]: +d[LOW],
+					[CLOSE]: +d[CLOSE],
+					[ADJCLOSE]: +d[ADJCLOSE],
+					[VOLUME]: +d[VOLUME]
+				}))
+
 		return(
 			<div className="nnThreeInOneParent">	
 				<NNThreeInOne
-					data={data} 
-					componentHeight={600}
-					componentWidth={900}
-					// view={this.state.view}
-					view={'treemap'}
+					data={cleanData}
+					componentHeight={this.state.componentHeight}
+					componentWidth={this.state.componentWidth}
+					view={this.state.view}
 					sizeKey={'High'}
 					colorKey={'Volume'}
 					sortKey={'Volume'}
-					label={true}
+					label={this.state.view !== 'bar'}
 					onHover={() => {}}
 					onClick={() => {}}
 					style={{
@@ -40,7 +82,7 @@ export class NNThreeInOneParent extends React.Component {
 					}}
 		  	/>
 				<button className="button" onClick={this.toggle}>
-					toggle heatmap/bar
+					toggle
 				</button>
 			</div>
 		)
