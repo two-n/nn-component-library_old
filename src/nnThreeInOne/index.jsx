@@ -9,7 +9,11 @@ import { TransitionGroup, CSSTransition } from "react-transition-group"
 import "./style.css";
 
 const calcHeatmapPosition = (data, options) => {
-	const {height, width, margin, columns} = options
+	const { componentHeight, componentWidth, dataLength, margin } = options
+	const columns = Math.max(Math.ceil(componentWidth / 250), Math.floor(componentWidth / 350))
+	const rows = Math.ceil(dataLength / columns)
+	const height = (componentHeight / rows) - margin;
+	const width = (componentWidth / columns) - margin
 
 	return data.map((d, i) => {
 		const top = (Math.floor(i / columns)) * (height + margin)
@@ -19,12 +23,13 @@ const calcHeatmapPosition = (data, options) => {
 }
 
 const calcBarPosition = (data, options) => {
-	const {yScale, sizeKey, width, componentHeight, margin} = options
+	const { yScale, sizeKey, componentHeight, dataLength, margin } = options
+	const width = (componentWidth / dataLength) - margin
+	const left = i * (width + margin)
 
 	return data.map((d, i) => {
 		const height = yScale(d[sizeKey])
 		const top = componentHeight - height
-		const left = i * (width + margin)
 		return { ...d, position: { height, width, top, left } }
 	})
 }
@@ -70,24 +75,14 @@ export class NNThreeInOne extends React.Component {
 		const colorScale = scaleSequential(interpolateRdYlGn)
 			.domain(extent(sortedData.map(d => +d[colorKey])))
 
-		const columns = Math.max(Math.ceil(componentWidth / 250), Math.floor(componentWidth / 350))
-		const rows = Math.ceil(sortedData.length / columns)
-
+		const dataLength = sortedData.length
 		const margin = this.props.margin || 2
-		const height = (componentHeight / rows) - margin;
-		const width = (view === 'bar'
-			? componentWidth / sortedData.length // bar
-			: componentWidth / columns) // heatmap
-			- margin;
 
 		const options = {
 			yScale, 
 			componentHeight, 
 			componentWidth, 
-			height, 
-			width,
-			rows,
-			columns,
+			dataLength,
 			margin,
 			sizeKey
 		}
