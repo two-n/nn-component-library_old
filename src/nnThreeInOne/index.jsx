@@ -9,22 +9,26 @@ import { TransitionGroup, CSSTransition } from "react-transition-group"
 import "./style.css";
 
 const calcHeatmapPosition = (data, options) => {
-	const { componentHeight, componentWidth, dataLength, margin } = options
+	const { componentHeight, componentWidth, margin } = options
 	const columns = Math.max(Math.ceil(componentWidth / 250), Math.floor(componentWidth / 350))
-	const rows = Math.ceil(dataLength / columns)
+	const rows = Math.ceil(data.length / columns)
 	const height = (componentHeight / rows) - margin;
 	const width = (componentWidth / columns) - margin
 
 	return data.map((d, i) => {
 		const top = (Math.floor(i / columns)) * (height + margin)
 		const left = (i % columns) * (width + margin)
+
 		return { ...d, position: { height, width, top, left } }
 	})
 }
 
 const calcBarPosition = (data, options) => {
-	const { yScale, sizeKey, componentHeight, componentWidth, dataLength, margin } = options
-	const width = (componentWidth / dataLength) - margin
+	const { sizeKey, componentHeight, componentWidth, margin } = options
+	const width = (componentWidth / data.length) - margin
+	const yScale = scaleLinear()
+			.domain(extent(data.map(d => +d[sizeKey])))
+			.range([0, componentHeight])
 
 	return data.map((d, i) => {
 		const height = yScale(d[sizeKey])
@@ -67,23 +71,14 @@ export class NNThreeInOne extends React.Component {
 		const { data, componentHeight, componentWidth, view, sizeKey, colorKey, sortKey, label, primary, secondary, onHover, onClick } = this.props
 		const sortedData = data
 			.sort((a, b) => +a[sortKey] - +b[sortKey])
-			// .slice(0, Math.floor(20*Math.random()))
-
-		const yScale = scaleLinear()
-			.domain(extent(sortedData.map(d => +d[sizeKey])))
-			.range([0, componentHeight])
 
 		const colorScale = scaleSequential(interpolateRdYlGn)
 			.domain(extent(sortedData.map(d => +d[colorKey])))
 
-		const dataLength = sortedData.length
 		const margin = this.props.margin || 2
-
 		const options = {
-			yScale, 
 			componentHeight, 
 			componentWidth, 
-			dataLength,
 			margin,
 			sizeKey
 		}
@@ -110,9 +105,9 @@ export class NNThreeInOne extends React.Component {
 							<div 
 								className='card'
 								style={{ ...d.position, backgroundColor: colorScale(d[colorKey]) }}
-								onClick={() => this.props.onClick(d[primary])}
-								onMouseEnter={() => this.props.onHover(d[primary])}
-								onMouseLeave={() => this.props.onHover(null)}
+								onClick={() => onClick(d[primary])}
+								onMouseEnter={() => onHover(d[primary])}
+								onMouseLeave={() => onHover(null)}
 							>
 								{label ?
 									<div>
