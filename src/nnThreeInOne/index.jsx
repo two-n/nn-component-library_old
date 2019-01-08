@@ -23,13 +23,13 @@ const calcHeatmapPosition = (data, options) => {
 }
 
 const calcBarPosition = (data, options) => {
-	const { yScale, sizeKey, componentHeight, dataLength, margin } = options
+	const { yScale, sizeKey, componentHeight, componentWidth, dataLength, margin } = options
 	const width = (componentWidth / dataLength) - margin
-	const left = i * (width + margin)
 
 	return data.map((d, i) => {
 		const height = yScale(d[sizeKey])
 		const top = componentHeight - height
+		const left = i * (width + margin)
 		return { ...d, position: { height, width, top, left } }
 	})
 }
