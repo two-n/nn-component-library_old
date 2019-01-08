@@ -12,8 +12,8 @@ const calcHeatmapPosition = (data, options) => {
 	const {height, width, margin, columns} = options
 
 	return data.map((d, i) => {
-		const top = Math.floor(i / (data.length / columns)) * (height + margin)
-		const left = i % (data.length / columns) * (width + margin)
+		const top = (Math.floor(i / columns)) * (height + margin)
+		const left = (i % columns) * (width + margin)
 		return { ...d, position: { height, width, top, left } }
 	})
 }
@@ -70,14 +70,16 @@ export class NNThreeInOne extends React.Component {
 		const colorScale = scaleSequential(interpolateRdYlGn)
 			.domain(extent(sortedData.map(d => +d[colorKey])))
 
-		const rows = this.props.rows || 3 // TODO implement wrapping when width gets too small
-		const columns = this.props.columns || 7
+		const columns = Math.max(Math.ceil(componentWidth / 250), Math.floor(componentWidth / 350))
+		const rows = Math.ceil(sortedData.length / columns)
+
 		const margin = this.props.margin || 2
-		const height = (componentHeight / columns) - margin;
+		const height = (componentHeight / rows) - margin;
 		const width = (view === 'bar'
 			? componentWidth / sortedData.length // bar
-			: componentWidth / rows) // heatmap
+			: componentWidth / columns) // heatmap
 			- margin;
+
 		const options = {
 			yScale, 
 			componentHeight, 
@@ -113,6 +115,9 @@ export class NNThreeInOne extends React.Component {
 								className='card'
 								style={{ ...d.position, backgroundColor: colorScale(d[colorKey]) }}
 								// TODO add events to trigger onHover and onClick callbacks
+								// onClick={this.props.onClick}
+								// onMouseEnter={this.props.onHover}
+								// onMouseExit={this.props.onHover}
 							>
 								{label ?
 									<div>
