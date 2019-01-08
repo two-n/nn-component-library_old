@@ -30,6 +30,7 @@ const calcBarPosition = (data, options) => {
 		const height = yScale(d[sizeKey])
 		const top = componentHeight - height
 		const left = i * (width + margin)
+
 		return { ...d, position: { height, width, top, left } }
 	})
 }
@@ -63,7 +64,7 @@ const calcTreemapPosition = (data, options) => {
 export class NNThreeInOne extends React.Component {
 
 	render() {
-		const { data, componentHeight, componentWidth, view, sizeKey, colorKey, sortKey, label, onHover, onClick } = this.props
+		const { data, componentHeight, componentWidth, view, sizeKey, colorKey, sortKey, label, primary, secondary, onHover, onClick } = this.props
 		const sortedData = data
 			.sort((a, b) => +a[sortKey] - +b[sortKey])
 			// .slice(0, Math.floor(20*Math.random()))
@@ -102,25 +103,24 @@ export class NNThreeInOne extends React.Component {
 					{positionedData.map((d,i) =>
 						<CSSTransition
 							in={true}
-							key={d.Date}
+							key={d[primary]}
 							timeout={500}
 							classNames="fade"
 						>
 							<div 
 								className='card'
 								style={{ ...d.position, backgroundColor: colorScale(d[colorKey]) }}
-								// TODO add events to trigger onHover and onClick callbacks
-								// onClick={this.props.onClick}
-								// onMouseEnter={this.props.onHover}
-								// onMouseExit={this.props.onHover}
+								onClick={() => this.props.onClick(d[primary])}
+								onMouseEnter={() => this.props.onHover(d[primary])}
+								onMouseLeave={() => this.props.onHover(null)}
 							>
 								{label ?
 									<div>
 										<div className='label'>
-											{`${d.Date}`}
+											{`${d[primary]}`}
 										</div>
 										<div className='subLabel'>
-											{`${d.Volume}`}
+											{`${d[secondary]}`}
 										</div>
 									</div>
 								: null }
@@ -133,7 +133,6 @@ export class NNThreeInOne extends React.Component {
 }
 
 NNThreeInOne.propTypes = {
-	// TODO add props for 'primary' and 'secondary' which correspond to label and sublabel. primary should also be used as key in CSSTransition
 	data: PropTypes.arrayOf(PropTypes.object).isRequired,
 	componentHeight: PropTypes.number.isRequired,
 	componentWidth: PropTypes.number.isRequired,
@@ -142,6 +141,8 @@ NNThreeInOne.propTypes = {
 	colorKey: PropTypes.string.isRequired,
 	sortKey: PropTypes.string,
 	label: PropTypes.bool,
+	primary: PropTypes.string.isRequired,
+	secondary: PropTypes.string,
 	onHover: PropTypes.func,
 	onClick: PropTypes.func
 }

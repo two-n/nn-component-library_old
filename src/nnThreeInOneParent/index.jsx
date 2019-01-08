@@ -73,8 +73,10 @@ export class NNThreeInOneParent extends React.Component {
 					colorKey={'Volume'}
 					sortKey={'Volume'}
 					label={this.state.view !== 'bar'}
-					onHover={() => {console.log('hovering')}}
-					onClick={() => {console.log('clicked')}}
+					primary={'Volume'}
+					secondary={'Date'}
+					onHover={(d) => {console.log('hovering on', d)}}
+					onClick={(d) => {console.log('clicked on', d)}}
 					style={{
 						position: "absolute",
 						top: "10px",
