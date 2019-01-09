@@ -1,0 +1,39 @@
+.nnThreeInOneComponent {
+  width: 100%;
+  position: relative;
+
+  .card {
+    position: absolute;
+    transition-property: top, left, width, height, opacity;
+    transition-duration: 500ms;
+
+    &.fade-enter {
+      opacity: 0.01;
+    }
+
+    &.fade-enter-active {
+      opacity: 1;
+    }
+
+    &.fade-exit {
+      opacity: 1;
+    }
+
+    &.fade-exit-active {
+      opacity: 0.01;
+    }
+
+    .label {
+      margin: 5px 5px 5px 5px;
+      font-family: 'Arial';
+      font-size: 24px;
+    }
+    .subLabel {
+      margin: 5px 5px 5px 5px;
+      font-family: 'Arial';
+      font-size: 18px;
+    }
+    
+  }
+
+}
