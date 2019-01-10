@@ -1,7 +1,7 @@
 import React from "react"
 import { scaleOrdinal } from "d3-scale"
 import { timeParse } from "d3-time-format"
-import { NNPerformanceLineChart } from "../nnPerformanceLineChart/index.jsx"
+import { NNLineChart } from "../nnLineChart/index.jsx"
 import data from "../nnTicker/data.js"
 
 const colorScale = scaleOrdinal()
@@ -46,16 +46,19 @@ export class NNTicker extends React.Component {
 				}))
 
 		return(
-			<div className="nnPerformanceLineChartParent"> 
-				<NNPerformanceLineChart 
+			<div className="NNLineChartParent"> 
+				<NNLineChart 
 					data={cleanData}
 					componentHeight={600}
 					componentWidth={900}
 					colorScale={colorScale}
 					colorScaleKey={"Ticker"}
-					dateFormat={"%d-%b-%y"}
 					xAxisKey={"Date"}
+					xAxisFormat={"%B %d, %Y"}
+					xAxisTicks={5}
 					yAxisKey={"Adjusted_close"}
+					yAxisFormat={".0%"}
+					yAxisTicks={5}
 					dataKey={"Performance"}
 					onHover={() => {}}
 				/>
