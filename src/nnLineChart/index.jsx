@@ -41,31 +41,64 @@ class Axis extends React.Component {
 
 export class NNLineChart extends React.Component {
 
+	_onHover(hoverOptions, event) {
+		const { combinedLineData, xScale, yScale, xAxisKey, yAxisKey } = hoverOptions
+
+		const xPos = event.screenX
+		const yPos = event.screenY
+
+		const roundDate = (date) => {
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+		}
+
+		const xPosValue = xScale.invert(xPos)
+		const yPosValue = yScale.invert(yPos)
+
+		const yValues = combinedLineData.filter(e => {
+			console.log(roundDate(e[xAxisKey]))
+			roundDate(e[xAxisKey]) === roundDate(xPosValue)
+		})
+
+		console.log(roundDate(xPosValue))
+		console.log(yPosValue)
+		console.log(yValues)
+
+		// const mouseData = {
+		// 	data: data,
+		// 	x: xScale(roundDate(xPosValue)),
+		// 	y: yScale(nearestLine)
+		// }
+		// onHover(mouseData)
+	}
+
 	render() {
 		const { data, componentHeight, componentWidth, colorScale, colorScaleKey, 
-			xAxisKey, xAxisFormat, xAxisTicks, yAxisKey, yAxisFormat, yAxisTicks, dataKey, onHover } = this.props
+			xAxisKey, xAxisFormat, yAxisKey, yAxisFormat, dataKey, onHover } = this.props
 
-		const margin = {
-			top: 10,
-			bottom: 50, 
-			left: 50, 
-			right: 10
-		}
+		const margin = { top: 10, bottom: 30, left: 30, right: 10 }
 		const chartWidth = componentWidth - margin.left - margin.right
 		const chartHeight = componentHeight - margin.top - margin.bottom
 
+		const combinedLineData = [].concat(...data.map(d => d[dataKey]))
+
 		const xScale = scaleTime()
-			.domain(extent([].concat(...data.map(d => d[dataKey])).map(d => d[xAxisKey])))
+			.domain(extent(combinedLineData.map(d => d[xAxisKey])))
 			.range([0, chartWidth])
 		const yScale = scaleLinear()
-			.domain(extent([].concat(...data.map(d => d[dataKey])).map(d => +d[yAxisKey])))
+			.domain(extent(combinedLineData.map(d => +d[yAxisKey])))
 			.range([chartHeight, 0])
+			.nice()
+
+		const hoverOptions = {
+			combinedLineData,
+			xScale,
+			yScale,
+			xAxisKey,
+			yAxisKey
+		}
 
 		return(
-			<svg
-				width={componentWidth}
-				height={componentHeight}
-			> 
+			<g> 
 				<g>
 					<Axis 
 						orient={'Bottom'}
@@ -78,7 +111,7 @@ export class NNLineChart extends React.Component {
 						orient={'Left'}
 						scale={yScale}
 						format={yAxisFormat}
-						ticks={7}
+						ticks={5}
 						tickSize={chartWidth}
 						translate={`translate(${componentWidth - margin.right}, ${margin.top})`}/>
 				</g>
@@ -95,8 +128,15 @@ export class NNLineChart extends React.Component {
 								.curve(curveMonotoneX)(d[dataKey])
 						}
 					/>
-				)} 
-			</svg>
+				)}
+				<rect
+					width={componentWidth}
+					height={componentHeight}
+					onMouseMove={this._onHover.bind(this, hoverOptions)}
+					style={{fill: 'blue', opacity: 0, pointerEvents: 'all'}}
+					>
+				</rect>
+			</g>
 		)
 	}
 }
@@ -109,10 +149,8 @@ NNLineChart.propTypes = {
 	colorScaleKey: PropTypes.string.isRequired,
 	xAxisKey: PropTypes.string.isRequired,
 	xAxisFormat: PropTypes.string,
-	xAxisTicks: PropTypes.string,
 	yAxisKey: PropTypes.string.isRequired,
 	yAxisFormat: PropTypes.string,
-	yAxisTicks: PropTypes.string,
 	dataKey: PropTypes.string.isRequired,
 	onHover: PropTypes.func
 }

@@ -6,7 +6,10 @@ import data from "../nnTicker/data.js"
 
 const colorScale = scaleOrdinal()
 	.domain(["AAPL", "MSFT"])
-	.range(["pink", "blue"])
+	.range(["red", "blue"])
+
+const svgWidth = 900,
+	svgHeight = 600
 
 const Constants = {
 	TICKER: "Ticker",
@@ -46,23 +49,25 @@ export class NNTicker extends React.Component {
 				}))
 
 		return(
-			<div className="NNLineChartParent"> 
+			<svg
+				className="NNLineChartParent"
+				width={svgWidth}
+				height={svgHeight}
+				>
 				<NNLineChart 
 					data={cleanData}
-					componentHeight={600}
-					componentWidth={900}
+					componentHeight={svgHeight}
+					componentWidth={svgWidth}
 					colorScale={colorScale}
 					colorScaleKey={"Ticker"}
 					xAxisKey={"Date"}
 					xAxisFormat={"%B %d, %Y"}
-					xAxisTicks={5}
 					yAxisKey={"Adjusted_close"}
 					yAxisFormat={".0%"}
-					yAxisTicks={5}
 					dataKey={"Performance"}
-					onHover={() => {}}
+					onHover={(d) => {console.log(d)}}
 				/>
-			</div>
+			</svg>
 		)
 	}
 }
