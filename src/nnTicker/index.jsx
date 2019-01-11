@@ -1,5 +1,6 @@
 import React from "react"
 import { scaleOrdinal } from "d3-scale"
+import { sort } from "d3-array"
 import { timeParse } from "d3-time-format"
 import { NNLineChart } from "../nnLineChart/index.jsx"
 import data from "../nnTicker/data.js"
@@ -47,6 +48,7 @@ export class NNTicker extends React.Component {
 								[VOLUME]: +e[VOLUME]
 							}))
 				}))
+			.sort((a,b) => a[DATE] - b[DATE])
 
 		return(
 			<svg
@@ -56,16 +58,17 @@ export class NNTicker extends React.Component {
 				>
 				<NNLineChart 
 					data={cleanData}
-					componentHeight={svgHeight}
+					componentHeight={svgHeight/2}
 					componentWidth={svgWidth}
+					dataKey={"Performance"}
 					colorScale={colorScale}
 					colorScaleKey={"Ticker"}
-					xAxisKey={"Date"}
-					xAxisFormat={"%B %d, %Y"}
+					dateKey={"Date"}
+					dateFormat={"%B %d, %Y"}
 					yAxisKey={"Adjusted_close"}
 					yAxisFormat={".0%"}
-					dataKey={"Performance"}
-					onHover={(d) => {console.log(d)}}
+					onHover={(d) => {console.log('hover data:', d)}}
+					percentChange={true}
 				/>
 			</svg>
 		)

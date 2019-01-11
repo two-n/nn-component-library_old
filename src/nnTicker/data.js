@@ -213,7 +213,7 @@ export default [
             "High": "27.376",
             "Low": "27.25",
             "Close": "27.25",
-            "Adjusted_close": "0.2919",
+            "Adjusted_close": "0.2319",
             "Volume": "785200"
         },
         {
@@ -321,7 +321,7 @@ export default [
             "High": "34.75",
             "Low": "34.5",
             "Close": "34.5",
-            "Adjusted_close": "0.4961",
+            "Adjusted_close": "0.2961",
             "Volume": "96700"
         },
         {
@@ -330,7 +330,7 @@ export default [
             "High": "33.876",
             "Low": "33.75",
             "Close": "33.75",
-            "Adjusted_close": "0.5853",
+            "Adjusted_close": "0.1853",
             "Volume": "159500"
         },
         {
@@ -339,7 +339,7 @@ export default [
             "High": "32.376",
             "Low": "32.25",
             "Close": "32.25",
-            "Adjusted_close": "0.5638",
+            "Adjusted_close": "0.1638",
             "Volume": "201600"
         },
         {
@@ -348,7 +348,7 @@ export default [
             "High": "31",
             "Low": "30.876",
             "Close": "30.876",
-            "Adjusted_close": "0.544",
+            "Adjusted_close": "0.144",
             "Volume": "248600"
         },
         {

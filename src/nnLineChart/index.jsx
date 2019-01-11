@@ -1,7 +1,7 @@
 import React from "react"
 import { PropTypes } from "prop-types"
 import { scaleLinear, scaleTime } from "d3-scale"
-import { extent } from "d3-array"
+import { extent, bisect } from "d3-array"
 import { select } from "d3-selection"
 import * as d3Axis from "d3-axis"
 import { line, curveMonotoneX } from "d3-shape"
@@ -42,59 +42,68 @@ class Axis extends React.Component {
 export class NNLineChart extends React.Component {
 
 	_onHover(hoverOptions, event) {
-		const { combinedLineData, xScale, yScale, xAxisKey, yAxisKey } = hoverOptions
+		const { dateKey, yAxisKey, onHover, percentChange } = this.props
+		const { dateRange, combinedLineData, xScale, yScale } = hoverOptions
 
-		const xPos = event.screenX
-		const yPos = event.screenY
+		const yLookup = percentChange ? "_percentChange" : yAxisKey
 
-		const roundDate = (date) => {
-			return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+		const { top, left } = event.target.getBoundingClientRect()
+		const xPosValue = xScale.invert(event.clientX - left)
+		const yPosValue = yScale.invert(event.clientY - top)
+		const index = bisect(dateRange, xPosValue)
+		const date = dateRange[index - 1]
+
+		const closestData = combinedLineData
+			.filter(d => {
+				return d[dateKey].getTime() === date.getTime()
+			})
+			.reduce((t,v) => {
+				return Math.abs(yPosValue - v[yLookup]) < Math.abs(yPosValue - t[yLookup]) ? v : t
+			}, { [yLookup] : Infinity })
+
+		const mouseData = {
+			data: closestData,
+			x: xScale(date),
+			y: yScale(closestData[yLookup])
 		}
 
-		const xPosValue = xScale.invert(xPos)
-		const yPosValue = yScale.invert(yPos)
-
-		const yValues = combinedLineData.filter(e => {
-			console.log(roundDate(e[xAxisKey]))
-			roundDate(e[xAxisKey]) === roundDate(xPosValue)
-		})
-
-		console.log(roundDate(xPosValue))
-		console.log(yPosValue)
-		console.log(yValues)
-
-		// const mouseData = {
-		// 	data: data,
-		// 	x: xScale(roundDate(xPosValue)),
-		// 	y: yScale(nearestLine)
-		// }
-		// onHover(mouseData)
+		onHover(mouseData)
 	}
 
 	render() {
-		const { data, componentHeight, componentWidth, colorScale, colorScaleKey, 
-			xAxisKey, xAxisFormat, yAxisKey, yAxisFormat, dataKey, onHover } = this.props
+		const { data, componentHeight, componentWidth, dataKey, colorScale, colorScaleKey,
+			dateKey, dateFormat, yAxisKey, yAxisFormat, onHover, percentChange } = this.props
+
+		let transformedData
+		if (percentChange) {
+			transformedData = data.map(d => Object.assign({}, d, {
+				[dataKey]: d[dataKey].map(e => Object.assign({}, e, {
+					"_percentChange": (e[yAxisKey] - d[dataKey][0][yAxisKey]) / d[dataKey][0][yAxisKey]
+				}))
+			}))
+		}
 
 		const margin = { top: 10, bottom: 30, left: 30, right: 10 }
 		const chartWidth = componentWidth - margin.left - margin.right
 		const chartHeight = componentHeight - margin.top - margin.bottom
 
-		const combinedLineData = [].concat(...data.map(d => d[dataKey]))
+		const combinedLineData = [].concat(...(percentChange ? transformedData : data).map(d => d[dataKey]))
+		// TODO: find the range of dates without assuming each data element has the same range
+		const dateRange = data[0][dataKey].map(d => d[dateKey])
 
 		const xScale = scaleTime()
-			.domain(extent(combinedLineData.map(d => d[xAxisKey])))
+			.domain(extent(combinedLineData, d => d[dateKey]))
 			.range([0, chartWidth])
 		const yScale = scaleLinear()
-			.domain(extent(combinedLineData.map(d => +d[yAxisKey])))
+			.domain(extent(combinedLineData, d => percentChange ? d["_percentChange"] : d[yAxisKey]))
 			.range([chartHeight, 0])
 			.nice()
 
 		const hoverOptions = {
+			dateRange,
 			combinedLineData,
 			xScale,
-			yScale,
-			xAxisKey,
-			yAxisKey
+			yScale
 		}
 
 		return(
@@ -103,7 +112,7 @@ export class NNLineChart extends React.Component {
 					<Axis 
 						orient={'Bottom'}
 						scale={xScale}
-						format={xAxisFormat}
+						format={dateFormat}
 						ticks={3}
 						tickSize={chartHeight + 5}
 						translate={`translate(${margin.left}, ${margin.top})`}/>
@@ -115,7 +124,7 @@ export class NNLineChart extends React.Component {
 						tickSize={chartWidth}
 						translate={`translate(${componentWidth - margin.right}, ${margin.top})`}/>
 				</g>
-				{data.map((d,i) => 
+				{(percentChange ? transformedData : data).map((d,i) =>
 					<path
 						key={d[colorScaleKey]}
 						stroke={colorScale(d[colorScaleKey])}
@@ -123,17 +132,17 @@ export class NNLineChart extends React.Component {
 						fill='none'
 						d={
 							line()
-								.x((d, i) => xScale(d[xAxisKey]) + margin.left)
-								.y((d) => yScale(d[yAxisKey]) + margin.top)
+								.x((d, i) => xScale(d[dateKey]) + margin.left)
+								.y((d) => yScale(percentChange ? d["_percentChange"] : d[yAxisKey]) + margin.top)
 								.curve(curveMonotoneX)(d[dataKey])
 						}
 					/>
 				)}
 				<rect
-					width={componentWidth}
-					height={componentHeight}
+					width={chartWidth}
+					height={chartHeight}
 					onMouseMove={this._onHover.bind(this, hoverOptions)}
-					style={{fill: 'blue', opacity: 0, pointerEvents: 'all'}}
+					style={{fill: 'blue', opacity: 0, pointerEvents: 'all', transform: `translate(${margin.left}px, ${margin.top}px)`}}
 					>
 				</rect>
 			</g>
@@ -145,12 +154,13 @@ NNLineChart.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.object).isRequired,
 	componentHeight: PropTypes.number.isRequired,
 	componentWidth: PropTypes.number.isRequired,
+	dataKey: PropTypes.string.isRequired,
 	colorScale: PropTypes.func.isRequired,
 	colorScaleKey: PropTypes.string.isRequired,
-	xAxisKey: PropTypes.string.isRequired,
-	xAxisFormat: PropTypes.string,
+	dateKey: PropTypes.string.isRequired,
+	dateFormat: PropTypes.string,
 	yAxisKey: PropTypes.string.isRequired,
 	yAxisFormat: PropTypes.string,
-	dataKey: PropTypes.string.isRequired,
-	onHover: PropTypes.func
+	onHover: PropTypes.func,
+	percentChange: PropTypes.bool,
 }
