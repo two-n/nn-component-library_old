@@ -122,8 +122,6 @@ export class NNLineChart extends React.Component {
 				</g>
 				{(dataSelection).map((d,i) =>
 					<path
-						// is there a more elegant way to determine this (ticker), now that the data is flat? This assumes
-						// that the data in each array will all have the same ticker in the data point after the first
 						key={d[0][colorScaleKey]}
 						stroke={colorScale(d[0][colorScaleKey])}
 						strokeWidth='1'
