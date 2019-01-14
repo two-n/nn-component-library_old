@@ -35,19 +35,19 @@ export class NNTicker extends React.Component {
 	render() {
 
 		let cleanData = data
-			.map(d => Object.assign({}, d,
-				{ 
-					[PERFORMANCE]: d[PERFORMANCE]
-						.map(e => Object.assign({}, e,
-							{ [DATE]: new Date (e[DATE]),
-								[OPEN]: +e[OPEN],
-								[HIGH]: +e[HIGH],
-								[LOW]: +e[LOW],
-								[CLOSE]: +e[CLOSE],
-								[ADJCLOSE]: +e[ADJCLOSE],
-								[VOLUME]: +e[VOLUME]
-							}))
-				}))
+			.map(d => d[PERFORMANCE]
+				.map(e => Object.assign({}, e,
+					{ [TICKER]: d[TICKER],
+						[DESCRIPTION]: d[DESCRIPTION],
+						[DATE]: new Date (e[DATE]),
+						[OPEN]: +e[OPEN],
+						[HIGH]: +e[HIGH],
+						[LOW]: +e[LOW],
+						[CLOSE]: +e[CLOSE],
+						[ADJCLOSE]: +e[ADJCLOSE],
+						[VOLUME]: +e[VOLUME]
+					}))
+				)
 			.sort((a,b) => a[DATE] - b[DATE])
 
 		return(
@@ -60,7 +60,6 @@ export class NNTicker extends React.Component {
 					data={cleanData}
 					componentHeight={svgHeight/2}
 					componentWidth={svgWidth}
-					dataKey={"Performance"}
 					colorScale={colorScale}
 					colorScaleKey={"Ticker"}
 					dateKey={"Date"}

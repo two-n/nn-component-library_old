@@ -42,31 +42,26 @@ class Axis extends React.Component {
 export class NNLineChart extends React.Component {
 
 	_onHover(hoverOptions, event) {
-		const { dateKey, yAxisKey, onHover, percentChange } = this.props
-		const { dateRange, combinedLineData, xScale, yScale } = hoverOptions
-
-		const yLookup = percentChange ? "_percentChange" : yAxisKey
+		const { dateKey, onHover } = this.props
+		const { dataSelectionKey, dateRange, flatLineData, xScale, yScale } = hoverOptions
 
 		const { top, left } = event.target.getBoundingClientRect()
 		const xPosValue = xScale.invert(event.clientX - left)
 		const yPosValue = yScale.invert(event.clientY - top)
-		const index = bisect(dateRange, xPosValue)
-		const date = dateRange[index - 1]
+		const date = dateRange[bisect(dateRange, xPosValue) - 1]
 
-		const closestData = combinedLineData
-			.filter(d => {
-				return d[dateKey].getTime() === date.getTime()
-			})
+		const closestData = flatLineData
+			.filter(d => d[dateKey].getTime() === date.getTime())
 			.reduce((t,v) => {
-				return Math.abs(yPosValue - v[yLookup]) < Math.abs(yPosValue - t[yLookup]) ? v : t
-			}, { [yLookup] : Infinity })
+				return Math.abs(yPosValue - v[dataSelectionKey]) < Math.abs(yPosValue - t[dataSelectionKey])
+					? v : t
+			}, { [dataSelectionKey] : Infinity })
 
 		const mouseData = {
 			data: closestData,
 			x: xScale(date),
-			y: yScale(closestData[yLookup])
+			y: yScale(closestData[dataSelectionKey])
 		}
-
 		onHover(mouseData)
 	}
 
@@ -76,32 +71,33 @@ export class NNLineChart extends React.Component {
 
 		let transformedData
 		if (percentChange) {
-			transformedData = data.map(d => Object.assign({}, d, {
-				[dataKey]: d[dataKey].map(e => Object.assign({}, e, {
-					"_percentChange": (e[yAxisKey] - d[dataKey][0][yAxisKey]) / d[dataKey][0][yAxisKey]
-				}))
-			}))
+			transformedData = data.map(d => d.map(e => Object.assign({}, e, {
+					"_percentChange": (e[yAxisKey] - d[0][yAxisKey]) / d[0][yAxisKey]
+				})
+			))
 		}
+
+		const dataSelection = percentChange ? transformedData : data
+		const dataSelectionKey = percentChange ? "_percentChange" : yAxisKey
+		const flatLineData = [].concat(...(dataSelection))
+		const dateRange = flatLineData.map(d => d[dateKey])
 
 		const margin = { top: 10, bottom: 30, left: 30, right: 10 }
 		const chartWidth = componentWidth - margin.left - margin.right
 		const chartHeight = componentHeight - margin.top - margin.bottom
 
-		const combinedLineData = [].concat(...(percentChange ? transformedData : data).map(d => d[dataKey]))
-		// TODO: find the range of dates without assuming each data element has the same range
-		const dateRange = data[0][dataKey].map(d => d[dateKey])
-
 		const xScale = scaleTime()
-			.domain(extent(combinedLineData, d => d[dateKey]))
+			.domain(extent(flatLineData, d => d[dateKey]))
 			.range([0, chartWidth])
 		const yScale = scaleLinear()
-			.domain(extent(combinedLineData, d => percentChange ? d["_percentChange"] : d[yAxisKey]))
+			.domain(extent(flatLineData, d => d[dataSelectionKey]))
 			.range([chartHeight, 0])
 			.nice()
 
 		const hoverOptions = {
+			dataSelectionKey,
 			dateRange,
-			combinedLineData,
+			flatLineData,
 			xScale,
 			yScale
 		}
@@ -124,17 +120,19 @@ export class NNLineChart extends React.Component {
 						tickSize={chartWidth}
 						translate={`translate(${componentWidth - margin.right}, ${margin.top})`}/>
 				</g>
-				{(percentChange ? transformedData : data).map((d,i) =>
+				{(dataSelection).map((d,i) =>
 					<path
-						key={d[colorScaleKey]}
-						stroke={colorScale(d[colorScaleKey])}
+						// is there a more elegant way to determine this (ticker), now that the data is flat? This assumes
+						// that the data in each array will all have the same ticker in the data point after the first
+						key={d[0][colorScaleKey]}
+						stroke={colorScale(d[0][colorScaleKey])}
 						strokeWidth='1'
 						fill='none'
 						d={
 							line()
 								.x((d, i) => xScale(d[dateKey]) + margin.left)
-								.y((d) => yScale(percentChange ? d["_percentChange"] : d[yAxisKey]) + margin.top)
-								.curve(curveMonotoneX)(d[dataKey])
+								.y((d) => yScale(d[dataSelectionKey]) + margin.top)
+								.curve(curveMonotoneX)(d)
 						}
 					/>
 				)}
@@ -151,10 +149,9 @@ export class NNLineChart extends React.Component {
 }
 
 NNLineChart.propTypes = {
-	data: PropTypes.arrayOf(PropTypes.object).isRequired,
+	data: PropTypes.arrayOf(PropTypes.array).isRequired,
 	componentHeight: PropTypes.number.isRequired,
 	componentWidth: PropTypes.number.isRequired,
-	dataKey: PropTypes.string.isRequired,
 	colorScale: PropTypes.func.isRequired,
 	colorScaleKey: PropTypes.string.isRequired,
 	dateKey: PropTypes.string.isRequired,
