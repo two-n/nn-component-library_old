@@ -1,8 +1,11 @@
 {
-  "name": "nn-component-library",
+  "name": "@two-n/nn-component-library",
   "version": "1.0.0",
   "description": "Reusable components for data visualization produced by TWO-N",
   "main": "./dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify src/main.jsx -o src/bundle.js",
