@@ -1,0 +1,19 @@
+.axis path,
+.axis line {
+  stroke: #E0E0E0;
+}
+
+.axis text {
+  font-size: 11px;
+  fill: black;
+}
+
+.axis-bottom text {
+  // transform: rotate(-45deg);
+  text-anchor: middle;
+}
+
+path {
+	stroke-width: 1px;
+  fill: none;
+}
