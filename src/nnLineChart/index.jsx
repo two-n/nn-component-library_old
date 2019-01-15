@@ -52,10 +52,7 @@ export class NNLineChart extends React.Component {
 
 		const closestData = flatLineData
 			.filter(d => d[dateKey].getTime() === date.getTime())
-			.reduce((t,v) => {
-				return Math.abs(yPosValue - v[dataSelectionKey]) < Math.abs(yPosValue - t[dataSelectionKey])
-					? v : t
-			}, { [dataSelectionKey] : Infinity })
+			.reduce((t,v) =>  Math.abs(yPosValue - v[dataSelectionKey]) < Math.abs(yPosValue - t[dataSelectionKey]) ? v : t, { [dataSelectionKey] : Infinity })
 
 		const mouseData = {
 			data: closestData,
@@ -77,7 +74,9 @@ export class NNLineChart extends React.Component {
 			))
 		}
 
-		const dataSelection = percentChange ? transformedData : data
+		const dataSelection = percentChange
+			? data.map(d => d.map(e => Object.assign({}, e, { "_percentChange": (e[yAxisKey] - d[0][yAxisKey]) / d[0][yAxisKey] }) ))
+			: data
 		const dataSelectionKey = percentChange ? "_percentChange" : yAxisKey
 		const flatLineData = [].concat(...(dataSelection))
 		const dateRange = flatLineData.map(d => d[dateKey])
@@ -93,6 +92,11 @@ export class NNLineChart extends React.Component {
 			.domain(extent(flatLineData, d => d[dataSelectionKey]))
 			.range([chartHeight, 0])
 			.nice()
+
+		const path = (d) => line()
+			.x((d) => xScale(d[dateKey]) + margin.left)
+			.y((d) => yScale(d[dataSelectionKey]) + margin.top)
+			.curve(curveMonotoneX)(d)
 
 		const hoverOptions = {
 			dataSelectionKey,
@@ -124,14 +128,7 @@ export class NNLineChart extends React.Component {
 					<path
 						key={d[0][colorScaleKey]}
 						stroke={colorScale(d[0][colorScaleKey])}
-						strokeWidth='1'
-						fill='none'
-						d={
-							line()
-								.x((d, i) => xScale(d[dateKey]) + margin.left)
-								.y((d) => yScale(d[dataSelectionKey]) + margin.top)
-								.curve(curveMonotoneX)(d)
-						}
+						d={path(d)}
 					/>
 				)}
 				<rect
