@@ -77,6 +77,7 @@ export class NNLineChart extends React.Component {
 		const dataSelection = percentChange
 			? data.map(d => d.map(e => Object.assign({}, e, { "_percentChange": (e[yAxisKey] - d[0][yAxisKey]) / d[0][yAxisKey] }) ))
 			: data
+
 		const dataSelectionKey = percentChange ? "_percentChange" : yAxisKey
 		const flatLineData = [].concat(...(dataSelection))
 		const dateRange = flatLineData.map(d => d[dateKey])
@@ -93,10 +94,10 @@ export class NNLineChart extends React.Component {
 			.range([chartHeight, 0])
 			.nice()
 
-		const path = (d) => line()
-			.x((d) => xScale(d[dateKey]) + margin.left)
-			.y((d) => yScale(d[dataSelectionKey]) + margin.top)
-			.curve(curveMonotoneX)(d)
+		const path = line()
+			.x(d => xScale(d[dateKey]) + margin.left)
+			.y(d => yScale(d[dataSelectionKey]) + margin.top)
+			.curve(curveMonotoneX)
 
 		const hoverOptions = {
 			dataSelectionKey,
