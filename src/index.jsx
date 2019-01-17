@@ -1,5 +1,5 @@
-import NNLineChart from "./nnLineChart/nnLineChart"
-import NNSlider from "./nnSlider/nnSlider"
-import NNThreeInOne from "./nnThreeInOne/nnThreeInOne"
+import nnLineChart from "./nnLineChart"
+import nnSlider from "./nnSlider"
+import nnThreeInOne from "./nnThreeInOne"
 
-export { NNLineChart, NNSlider, NNThreeInOne } 
+module.exports = { nnLineChart, nnSlider, nnThreeInOne };

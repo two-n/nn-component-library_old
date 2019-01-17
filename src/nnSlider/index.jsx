@@ -6,7 +6,7 @@ import {scaleLinear} from "d3-scale"
 
 import "./style.css"
 
-export class nnSlider extends Component {
+class nnSlider extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -97,3 +97,5 @@ nnSlider.defaultProps = {
 	step: 1,
 	domain: [0, 1]
 }
+
+module.exports = nnSlider

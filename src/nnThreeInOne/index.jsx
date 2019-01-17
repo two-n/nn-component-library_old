@@ -65,7 +65,7 @@ const calcTreemapPosition = (data, options) => {
   	}))
 }
 
-export class NNThreeInOne extends React.Component {
+class nnThreeInOne extends React.Component {
 
 	render() {
 		const { data, componentHeight, componentWidth, view, sizeKey, colorKey, sortKey, label, primary, secondary, onHover, onClick } = this.props
@@ -127,7 +127,7 @@ export class NNThreeInOne extends React.Component {
 	}
 }
 
-NNThreeInOne.propTypes = {
+nnThreeInOne.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.object).isRequired,
 	componentHeight: PropTypes.number.isRequired,
 	componentWidth: PropTypes.number.isRequired,
@@ -141,3 +141,5 @@ NNThreeInOne.propTypes = {
 	onHover: PropTypes.func,
 	onClick: PropTypes.func
 }
+
+module.exports = nnThreeInOne

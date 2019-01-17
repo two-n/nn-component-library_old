@@ -1,5 +1,5 @@
 import React from "react"
-import { NNThreeInOne } from "../nnThreeInOne/index.jsx"
+import { nnThreeInOne } from "../nnThreeInOne/index.jsx"
 import data from "../nnThreeInOne/data.js"
 
 const views = ['bar', 'heatmap', 'treemap']
@@ -15,7 +15,7 @@ const Constants = {
 }
 const { DATE, OPEN, HIGH, LOW, CLOSE, ADJCLOSE, VOLUME } = Constants
 
-export class NNThreeInOneParent extends React.Component {
+export class nnThreeInOneParent extends React.Component {
 
 	constructor(props) {
 		super(props)
@@ -64,7 +64,7 @@ export class NNThreeInOneParent extends React.Component {
 
 		return(
 			<div className="nnThreeInOneParent">	
-				<NNThreeInOne
+				<nnThreeInOne
 					data={cleanData}
 					componentHeight={this.state.componentHeight}
 					componentWidth={this.state.componentWidth}
