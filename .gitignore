@@ -1,5 +1,5 @@
 node_modules
 dist
 src/*/*.css
-src/bundle.js
+*/bundle.js
 .DS_Store
