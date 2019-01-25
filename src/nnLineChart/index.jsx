@@ -39,8 +39,8 @@ class Axis extends React.Component {
 	}
 }
 
-export class NNLineChart extends React.Component {
-// class NNLineChart extends React.Component {
+// export class NNLineChart extends React.Component {
+class NNLineChart extends React.Component {
 
 	_onHover(hoverOptions, event) {
 		const { dateKey, onHover } = this.props
@@ -167,4 +167,4 @@ NNLineChart.defaultProps = {
 	percentChange: true,
 	marginArray: [10, 10, 30, 30],
 }
-// module.exports = NNLineChart
+module.exports = NNLineChart

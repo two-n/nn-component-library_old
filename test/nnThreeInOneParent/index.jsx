@@ -4,7 +4,7 @@ import { NNTicker } from "../nnTicker/index.jsx"
 import { interpolateSpectral } from "d3-scale-chromatic"
 import { scaleLinear, scaleSequential } from "d3-scale"
 import { extent } from "d3-array"
-import data from "../nnThreeInOne/data.js"
+import data from "./data.js"
 
 import "./style.css";
 

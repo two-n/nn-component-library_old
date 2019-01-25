@@ -66,8 +66,8 @@ const calcTreemapPosition = (data, options) => {
   	}))
 }
 
-export class NNThreeInOne extends React.Component {
-// class NNThreeInOne extends React.Component {
+// export class NNThreeInOne extends React.Component {
+class NNThreeInOne extends React.Component {
 
 	render() {
 		const { data, componentHeight, componentWidth, view, sizeKey, colorKey, colorScale, sortKey, 
@@ -155,4 +155,4 @@ NNThreeInOne.defaultProps = {
 	onClick: (d) => {console.log('clicked on', d)}
 }
 
-// module.exports = NNThreeInOne
+module.exports = NNThreeInOne

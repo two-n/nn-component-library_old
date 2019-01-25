@@ -19,9 +19,11 @@
     "scss-dist-three": "node-sass \"src/nnThreeInOne/style.scss\" -o \"dist/nnThreeInOne/\"",
     "scss-dist-line": "node-sass \"src/nnLineChart/style.scss\" -o \"dist/nnLineChart/\"",
     "scss-dist-slide": "node-sass \"src/nnSlider/style.scss\" -o \"dist/nnSlider/\"",
+    "scss-dist-slide": "node-sass \"src/nnSlider/style.scss\" -o \"dist/nnSlider/\"",
+    "scss-dist-bar": "node-sass \"src/nnBarChart/style.scss\" -o \"dist/nnBarChart/\"",
     "scss-src-three": "node-sass \"src/nnThreeInOne/style.scss\" -o \"src/nnThreeInOne/\"",
     "scss-src-line": "node-sass \"src/nnLineChart/style.scss\" -o \"src/nnLineChart/\"",
-    "scss-src-bar": "node-sass \"src/nnLineChart/style.scss\" -o \"src/nnBarChart/\"",
+    "scss-src-bar": "node-sass \"src/nnBarChart/style.scss\" -o \"src/nnBarChart/\"",
     "watch-js": "watchify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify src/main.jsx -d -o src/bundle.js",
     "watch": "npm run watch-sass & npm run watch-js"
   },
