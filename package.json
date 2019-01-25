@@ -19,7 +19,6 @@
     "scss-dist-three": "node-sass \"src/nnThreeInOne/style.scss\" -o \"dist/nnThreeInOne/\"",
     "scss-dist-line": "node-sass \"src/nnLineChart/style.scss\" -o \"dist/nnLineChart/\"",
     "scss-dist-slide": "node-sass \"src/nnSlider/style.scss\" -o \"dist/nnSlider/\"",
-    "scss-dist-slide": "node-sass \"src/nnSlider/style.scss\" -o \"dist/nnSlider/\"",
     "scss-dist-bar": "node-sass \"src/nnBarChart/style.scss\" -o \"dist/nnBarChart/\"",
     "scss-src-three": "node-sass \"src/nnThreeInOne/style.scss\" -o \"src/nnThreeInOne/\"",
     "scss-src-line": "node-sass \"src/nnLineChart/style.scss\" -o \"src/nnLineChart/\"",
@@ -50,7 +49,6 @@
     "d3-scale-chromatic": "^1.3.3",
     "d3-selection": "^1.3.2",
     "d3-shape": "^1.2.2",
-    "d3fc": "^14.0.25",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-transition-group": "^2.5.2"

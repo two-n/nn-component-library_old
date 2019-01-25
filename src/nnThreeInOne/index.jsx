@@ -110,7 +110,7 @@ class NNThreeInOne extends React.Component {
 						>
 							<div 
 								className='card'
-								style={{ ...d.position, position: 'absolute', backgroundColor: _colorScale(d[colorKey]) }}
+								style={{ ...d.position, backgroundColor: _colorScale(d[colorKey]) }}
 								onClick={() => onClick(d[primary])}
 								onMouseEnter={() => onHover(d[primary])}
 								onMouseLeave={() => onHover(null)}
