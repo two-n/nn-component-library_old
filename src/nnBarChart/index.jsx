@@ -1,7 +1,6 @@
 import React from "react"
 import { PropTypes } from "prop-types"
 import { scaleLinear, scaleTime, scaleBand } from "d3-scale"
-import { discontinuitySkipWeekends } from "d3fc"
 import { extent, bisect } from "d3-array"
 import { select } from "d3-selection"
 import * as d3Axis from "d3-axis"
@@ -40,7 +39,8 @@ class Axis extends React.Component {
 	}
 }
 
-export class NNBarChart extends React.Component {
+// export class NNBarChart extends React.Component {
+class NNBarChart extends React.Component {
 
 	_onHover(hoverOptions, event) {
 		const { dateKey, onHover } = this.props
@@ -185,4 +185,4 @@ NNBarChart.defaultProps = {
 	onHover: (d) => {console.log('hover data:', d)},
 }
 
-// module.exports = NNBarChart
+module.exports = NNBarChart
