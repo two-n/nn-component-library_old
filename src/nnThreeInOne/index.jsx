@@ -29,6 +29,7 @@ const calcBarPosition = (data, options) => {
 	const yScale = scaleLinear()
 			.domain(extent(data.map(d => +d[sizeKey])))
 			.range([0, componentHeight])
+			.nice()
 
 	return data.map((d, i) => {
 		const height = yScale(d[sizeKey])
@@ -65,15 +66,20 @@ const calcTreemapPosition = (data, options) => {
   	}))
 }
 
-class nnThreeInOne extends React.Component {
+export class NNThreeInOne extends React.Component {
+// class NNThreeInOne extends React.Component {
 
 	render() {
-		const { data, componentHeight, componentWidth, view, sizeKey, colorKey, sortKey, label, primary, secondary, onHover, onClick } = this.props
-		const sortedData = data
-			.sort((a, b) => +a[sortKey] - +b[sortKey])
+		const { data, componentHeight, componentWidth, view, sizeKey, colorKey, colorScale, sortKey, 
+			label, primary, secondary, onHover, onClick } = this.props
 
-		const colorScale = scaleSequential(interpolateRdYlGn)
-			.domain(extent(sortedData.map(d => +d[colorKey])))
+		// create default values 
+		const _sortKey = sortKey || primary
+		const _sortedData = data
+			.sort((a, b) => +a[_sortKey] - +b[_sortKey])
+		const _colorScale = colorScale || scaleSequential(interpolateRdYlGn)
+			.domain(extent(_sortedData.map(d => +d[colorKey])))
+
 
 		const margin = this.props.margin || 2
 		const options = {
@@ -85,15 +91,15 @@ class nnThreeInOne extends React.Component {
 
 		let positionedData = []
 		if (view === 'heatmap') {
-			positionedData = calcHeatmapPosition(sortedData, options)
+			positionedData = calcHeatmapPosition(_sortedData, options)
 		} else if (view === 'treemap') {
-			positionedData = calcTreemapPosition(sortedData, options)
+			positionedData = calcTreemapPosition(_sortedData, options)
 		} else {
-			positionedData = calcBarPosition(sortedData, options)
+			positionedData = calcBarPosition(_sortedData, options)
 		}
 
 		return (
-			<div className="nnThreeInOneComponent" style={{ height: componentHeight, width: componentWidth }}>
+			<div className="NNThreeInOne" style={{ height: componentHeight, width: componentWidth }}>
 				<TransitionGroup component="div" className="transition-group">
 					{positionedData.map((d,i) =>
 						<CSSTransition
@@ -104,19 +110,19 @@ class nnThreeInOne extends React.Component {
 						>
 							<div 
 								className='card'
-								style={{ ...d.position, backgroundColor: colorScale(d[colorKey]) }}
+								style={{ ...d.position, position: 'absolute', backgroundColor: _colorScale(d[colorKey]) }}
 								onClick={() => onClick(d[primary])}
 								onMouseEnter={() => onHover(d[primary])}
 								onMouseLeave={() => onHover(null)}
 							>
 								{label ?
 									<div>
-										<div className='label'>
+										<div className='cardLabel'>
 											{`${d[primary]}`}
 										</div>
-										<div className='subLabel'>
+										{secondary ? <div className='cardSubLabel'>
 											{`${d[secondary]}`}
-										</div>
+										</div> : null}
 									</div>
 								: null }
 							</div>
@@ -127,13 +133,14 @@ class nnThreeInOne extends React.Component {
 	}
 }
 
-nnThreeInOne.propTypes = {
+NNThreeInOne.propTypes = {
 	data: PropTypes.arrayOf(PropTypes.object).isRequired,
 	componentHeight: PropTypes.number.isRequired,
 	componentWidth: PropTypes.number.isRequired,
 	view: PropTypes.oneOf(['treemap', 'heatmap', 'bar']).isRequired,
 	sizeKey: PropTypes.string.isRequired,
 	colorKey: PropTypes.string.isRequired,
+	colorScale: PropTypes.string,
 	sortKey: PropTypes.string,
 	label: PropTypes.bool,
 	primary: PropTypes.string.isRequired,
@@ -142,4 +149,10 @@ nnThreeInOne.propTypes = {
 	onClick: PropTypes.func
 }
 
-module.exports = nnThreeInOne
+NNThreeInOne.defaultProps = {
+	label: false,
+	onHover: (d) => {console.log('hovering on', d)},
+	onClick: (d) => {console.log('clicked on', d)}
+}
+
+// module.exports = NNThreeInOne

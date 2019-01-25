@@ -6,7 +6,7 @@ import {scaleLinear} from "d3-scale"
 
 import "./style.css"
 
-class nnSlider extends Component {
+class NNSlider extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -21,7 +21,7 @@ class nnSlider extends Component {
 	}
 
 	componentDidMount() {
-		select(this.refs.nnSliderThumb).call(
+		select(this.refs.NNSliderThumb).call(
 			drag()
 				.on("start", () => {
 					this.dragStart()
@@ -49,7 +49,7 @@ class nnSlider extends Component {
 
 	dragGo(e) {
 		if (!this.state.dragging) return
-		const {width} = this.refs.nnSliderComponent.getBoundingClientRect()
+		const {width} = this.refs.NNSliderComponent.getBoundingClientRect()
 		const next = Math.min(
 			this.props.domain[1],
 			Math.max(this.props.domain[0], this.state.scale.invert((100 * e.x) / width))
@@ -65,17 +65,17 @@ class nnSlider extends Component {
 		const {value} = this.props
 		const {scale} = this.state
 		return (
-			<div className="nnSliderComponent" ref="nnSliderComponent">
-				<div className="nnSliderTrack">
+			<div className="NNSliderComponent" ref="NNSliderComponent">
+				<div className="NNSliderTrack">
 					<div
-						className="nnSliderProgress"
+						className="NNSliderProgress"
 						style={{
 							width: scale(value) + "%"
 						}}
 					/>
 					<div
-						className="nnSliderThumb"
-						ref="nnSliderThumb"
+						className="NNSliderThumb"
+						ref="NNSliderThumb"
 						style={{
 							left: scale(value) + "%"
 						}}
@@ -86,16 +86,16 @@ class nnSlider extends Component {
 	}
 }
 
-nnSlider.propTypes = {
+NNSlider.propTypes = {
 	value: PropTypes.number.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	domain: PropTypes.arrayOf(PropTypes.number),
 	step: PropTypes.number
 }
 
-nnSlider.defaultProps = {
+NNSlider.defaultProps = {
 	step: 1,
 	domain: [0, 1]
 }
 
-module.exports = nnSlider
+module.exports = NNSlider

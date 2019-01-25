@@ -3,7 +3,10 @@ import { scaleOrdinal } from "d3-scale"
 import { sort } from "d3-array"
 import { timeParse } from "d3-time-format"
 import { NNLineChart } from "../nnLineChart/index.jsx"
+import { NNBarChart } from "../nnBarChart/index.jsx"
 import data from "../nnTicker/data.js"
+
+import "./style.css";
 
 const colorScale = scaleOrdinal()
 	.domain(["AAPL", "MSFT"])
@@ -52,7 +55,7 @@ export class NNTicker extends React.Component {
 
 		return(
 			<svg
-				className="NNLineChartParent"
+				className="NNTicker"
 				width={svgWidth}
 				height={svgHeight}
 				>
@@ -63,12 +66,25 @@ export class NNTicker extends React.Component {
 					colorScale={colorScale}
 					colorScaleKey={"Ticker"}
 					dateKey={"Date"}
-					dateFormat={"%B %d, %Y"}
+					// dateFormat={"%B %d, %Y"}
 					yAxisKey={"Adjusted_close"}
-					yAxisFormat={".0%"}
+					// yAxisFormat={".0%"}
 					onHover={(d) => {console.log('hover data:', d)}}
 					percentChange={true}
 				/>
+				<NNBarChart
+					data={cleanData[0]}
+					componentHeight={svgHeight/2}
+					componentWidth={svgWidth}
+					dateKey={"Date"}
+					// dateFormat={"%B %d, %Y"}
+					yAxisKey={"Volume"}
+					// yAxisFormat={"~s"}
+					// marginArray={[10, 10, 30, 30]}
+					translate={[0, svgHeight/2]}
+					onHover={(d) => {console.log('hover data:', d)}}
+				/>
+
 			</svg>
 		)
 	}
