@@ -69,8 +69,6 @@ class NNBarChart extends React.Component {
 		const { data, componentHeight, componentWidth, dataKey, dateKey, dateFormat,
 			yAxisKey, yAxisFormat, marginArray, translate, onHover } = this.props
 
-		console.log('data:',data)
-
 		// this is used to determine the entire extent of dates included in the data passed in -- in case one line 
 		// has more date values than the other
 		const flatLineData = [].concat(...(data))

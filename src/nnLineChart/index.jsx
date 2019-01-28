@@ -90,9 +90,6 @@ class NNLineChart extends React.Component {
 		const dateSet = [...new Set(flatLineData.map(d => d[dateKey].toString()))]
 		const formattedDateSet = dateSet.map(e => dateFormatFunc(new Date(e)))
 
-		console.log(dateSet)
-		console.log(formattedDateSet)
-
 		const margin = { top: 10, bottom: 30, left: 30, right: 10 }
 		const chartWidth = componentWidth - margin.left - margin.right
 		const chartHeight = componentHeight - margin.top - margin.bottom
