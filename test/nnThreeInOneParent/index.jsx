@@ -6,7 +6,7 @@ import { scaleLinear, scaleSequential } from "d3-scale"
 import { extent } from "d3-array"
 import data from "./data.js"
 
-import "./style.css";
+// import "./style.css";
 
 const views = ['bar', 'heatmap', 'treemap']
 
@@ -72,32 +72,32 @@ export class NNThreeInOneParent extends React.Component {
 				}))
 
 		return(
-			// <div className="nnThreeInOneParent">	
-			// 	<NNThreeInOne
-			// 		data={cleanData}
-			// 		componentHeight={this.state.componentHeight}
-			// 		componentWidth={this.state.componentWidth}
-			// 		view={this.state.view}
-			// 		sizeKey={'High'}
-			// 		colorKey={'Volume'}
-			// 		// colorScale={colorScale}
-			// 		sortKey={'Volume'}
-			// 		label={this.state.view !== 'bar'}
-			// 		primary={'Volume'}
-			// 		secondary={'Date'}
-			// 		onHover={(d) => {console.log('hovering on', d)}}
-			// 		onClick={(d) => {console.log('clicked on', d)}}
-			// 		style={{
-			// 			position: "absolute",
-			// 			top: "10px",
-			// 			left: "10px"
-			// 		}}
-		 //  	/>
-			// 	<button className="button" onClick={this.toggle}>
-			// 		toggle
-			// 	</button>
+			<div className="nnThreeInOneParent">	
+				{/*<NNThreeInOne
+									data={cleanData}
+									componentHeight={this.state.componentHeight}
+									componentWidth={this.state.componentWidth}
+									view={this.state.view}
+									sizeKey={'High'}
+									colorKey={'Volume'}
+									// colorScale={colorScale}
+									sortKey={'Volume'}
+									label={this.state.view !== 'bar'}
+									primary={'Volume'}
+									secondary={'Date'}
+									onHover={(d) => {console.log('hovering on', d)}}
+									onClick={(d) => {console.log('clicked on', d)}}
+									style={{
+										position: "absolute",
+										top: "10px",
+										left: "10px"
+									}}
+						  	/>
+								<button className="button" onClick={this.toggle}>
+									toggle
+								</button>*/}
 				<NNTicker/>
-			// </div>
+			</div>
 		)
 	}
 }

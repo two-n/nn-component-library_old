@@ -139,7 +139,7 @@ NNThreeInOne.propTypes = {
 	componentWidth: PropTypes.number.isRequired,
 	view: PropTypes.oneOf(['treemap', 'heatmap', 'bar']).isRequired,
 	sizeKey: PropTypes.string.isRequired,
-	colorKey: PropTypes.string.isRequired,
+	colorKey: PropTypes.oneOfType(PropTypes.string, PropTypes.func),
 	colorScale: PropTypes.string,
 	sortKey: PropTypes.string,
 	label: PropTypes.bool,

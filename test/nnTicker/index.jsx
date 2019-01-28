@@ -5,6 +5,7 @@ import { timeParse } from "d3-time-format"
 import { NNLineChart } from "../nnLineChart/index.jsx"
 import { NNBarChart } from "../nnBarChart/index.jsx"
 import data from "../nnTicker/data.js"
+import history from "../nnTicker/history.js"
 
 import "./style.css";
 
@@ -27,6 +28,7 @@ const Constants = {
   ADJCLOSE: "Adjusted_close",
   VOLUME: "Volume"
 }
+
 const { TICKER, DESCRIPTION, PERFORMANCE, DATE, OPEN, HIGH, LOW, CLOSE, ADJCLOSE, VOLUME } = Constants
 
 export class NNTicker extends React.Component {
@@ -53,6 +55,18 @@ export class NNTicker extends React.Component {
 				)
 			.sort((a,b) => a[DATE] - b[DATE])
 
+		// let cleanHistory = history
+		// 	.map(e => Object.assign({}, e,
+		// 		{ ['ticker']: e['ticker'],
+		// 			['date']: new Date(e['date']),
+		// 			['open']: +e['open'],
+		// 			['high']: +e['high'],
+		// 			['low']: +e['low'],
+		// 			['close']: +e['close'],
+		// 			['volume']: +e['volume']
+		// 		}))
+		// 	.sort((a,b) => a['date'] - b['date'])
+
 		return(
 			<svg
 				className="NNTicker"
@@ -68,13 +82,13 @@ export class NNTicker extends React.Component {
 					dateKey={"Date"}
 					// dateFormat={"%B %d, %Y"}
 					yAxisKey={"Adjusted_close"}
-					// yAxisFormat={".0%"}
+					yAxisFormat={".0%"}
 					onHover={(d) => {console.log('hover data:', d)}}
 					percentChange={true}
 				/>
 				<NNBarChart
 					data={cleanData[0]}
-					componentHeight={svgHeight/2}
+					componentHeight={svgHeight/2}	
 					componentWidth={svgWidth}
 					dateKey={"Date"}
 					// dateFormat={"%B %d, %Y"}

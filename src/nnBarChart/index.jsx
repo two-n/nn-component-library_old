@@ -1,7 +1,9 @@
 import React from "react"
 import { PropTypes } from "prop-types"
-import { scaleLinear, scaleTime, scaleBand } from "d3-scale"
+import { scaleLinear, scaleTime, scaleBand, scalePoint } from "d3-scale"
 import { extent, bisect } from "d3-array"
+import { timeFormat } from "d3-time-format"
+import { format } from "d3-format"
 import { select } from "d3-selection"
 import * as d3Axis from "d3-axis"
 import { line, curveMonotoneX } from "d3-shape"
@@ -22,8 +24,9 @@ class Axis extends React.Component {
 		const axisType = `axis${this.props.orient}`
     const axis = d3Axis[axisType]()
 			.scale(this.props.scale)
-			.ticks(this.props.ticks, this.props.format)
+			.ticks(this.props.ticks)
 			.tickSize(this.props.tickSize)
+			.tickFormat(this.props.format)
 
 		select(this.axisElement).call(axis)
 	}
@@ -44,20 +47,19 @@ class NNBarChart extends React.Component {
 
 	_onHover(hoverOptions, event) {
 		const { dateKey, onHover } = this.props
-		const { yAxisKey, dateArray, flatLineData, xScale, yScale } = hoverOptions
+		const { yAxisKey, flatLineData, xScale, yScale } = hoverOptions
 
 		const { top, left } = event.target.getBoundingClientRect()
-		const xPosValue = xScale.invert(event.clientX - left)
+		const xPosIndex = Math.floor(xScale.invert(event.clientX - left))
 		const yPosValue = yScale.invert(event.clientY - top)
-		const date = dateArray[bisect(dateArray, xPosValue) - 1]
 
 		const closestData = flatLineData
-			.filter(d => d[dateKey].getTime() === date.getTime())
+			.filter((d,i) => i === xPosIndex)
 			.reduce((t,v) =>  Math.abs(yPosValue - v[yAxisKey]) < Math.abs(yPosValue - t[yAxisKey]) ? v : t, { [yAxisKey] : Infinity })
 
 		const mouseData = {
 			data: closestData,
-			x: xScale(date),
+			x: xScale(xPosIndex),
 			y: yScale(closestData[yAxisKey])
 		}
 		onHover(mouseData)
@@ -67,45 +69,22 @@ class NNBarChart extends React.Component {
 		const { data, componentHeight, componentWidth, dataKey, dateKey, dateFormat,
 			yAxisKey, yAxisFormat, marginArray, translate, onHover } = this.props
 
+		console.log('data:',data)
+
 		// this is used to determine the entire extent of dates included in the data passed in -- in case one line 
 		// has more date values than the other
 		const flatLineData = [].concat(...(data))
-		// this then returns all dates to leverage for the bisect function of hover activity
-		const dateArray = flatLineData.map(d => d[dateKey])
-		// to make a continuous date range for the band scale, we need to know the extent of it
-		const dateRange = extent(dateArray)
-
-		// this function and "getDates" allows us to make a date range that includes weekends (since our data set does not)
-		Date.prototype.addDays = function(days) {
-	    var date = new Date(this.valueOf());
-	    date.setDate(date.getDate() + days);
-	    return date;
-	  }
-		const getDates = ([startDate, stopDate]) => {
-			let contDateArray = new Array
-	    let currentDate = startDate;
-	    while (currentDate <= stopDate) {
-        contDateArray.push(new Date (currentDate));
-        currentDate = currentDate.addDays(1);
-	    }
-	    return contDateArray;
-		}
-	  const contDateArray = getDates(dateRange)
-
+		// this then returns all dates in a set to remove duplicates and find unique dates
+		const dateFormatFunc = timeFormat(dateFormat)
+		const dateSet = [...new Set(flatLineData.map(d => dateFormatFunc(d[dateKey]).toString()))]
 
 		const margin = { top: marginArray[0], right: marginArray[1], bottom: marginArray[2], left: marginArray[3] }
 		const chartWidth = componentWidth - margin.left - margin.right
 		const chartHeight = componentHeight - margin.top - margin.bottom
 
-		const xScale = scaleTime()
-			.domain(extent(flatLineData, d => d[dateKey]))
+		const xScale = scaleLinear()
+			.domain([0, dateSet.length])
 			.rangeRound([0, chartWidth])
-
-		// the band scale is used to place the bars on the appropriate dates given the continuous time scale
-		const xBandScale = scaleBand()
-			.domain(contDateArray)
-			.range([0, chartWidth])
-			.padding(0.3)
 
 		const yScale = scaleLinear()
 			.domain(extent(flatLineData, d => d[yAxisKey]))
@@ -114,7 +93,6 @@ class NNBarChart extends React.Component {
 
 		const hoverOptions = {
 			yAxisKey,
-			dateArray,
 			flatLineData,
 			xScale,
 			yScale
@@ -126,14 +104,14 @@ class NNBarChart extends React.Component {
 					<Axis 
 						orient={'Bottom'}
 						scale={xScale}
-						format={dateFormat}
+						format={d => dateSet[d]}
 						ticks={3}
 						tickSize={5}
 						translate={`translate(${margin.left}, ${chartHeight + margin.top})`}/>
 					<Axis 
 						orient={'Left'}
 						scale={yScale}
-						format={yAxisFormat}
+						format={format(yAxisFormat)}
 						ticks={5}
 						tickSize={chartWidth}
 						translate={`translate(${componentWidth - margin.right}, ${margin.top})`}/>
@@ -142,11 +120,11 @@ class NNBarChart extends React.Component {
 					return <rect
 						className={'bar'}
 						key={i}
-						width={xBandScale.bandwidth()}
+						width={(chartWidth / data.length)*0.5}
 						height={yScale(d[yAxisKey])}
 						transform={
 							`translate(
-								${margin.left + xBandScale(d[dateKey])},
+								${margin.left + xScale(i)},
 								${margin.top + chartHeight - yScale(d[yAxisKey]) })
 							`}
 					>	
