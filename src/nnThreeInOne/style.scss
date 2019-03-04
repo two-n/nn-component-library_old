@@ -1,6 +1,4 @@
-.nnThreeInOneComponent {
-  width: 100%;
-  position: relative;
+.NNThreeInOne {
 
   .card {
     position: absolute;
@@ -21,17 +19,6 @@
 
     &.fade-exit-active {
       opacity: 0.01;
-    }
-
-    .label {
-      margin: 5px 5px 5px 5px;
-      font-family: 'Arial';
-      font-size: 24px;
-    }
-    .subLabel {
-      margin: 5px 5px 5px 5px;
-      font-family: 'Arial';
-      font-size: 18px;
     }
     
   }

@@ -1,6 +1,12 @@
 import React from "react"
-import { nnThreeInOne } from "../nnThreeInOne/index.jsx"
-import data from "../nnThreeInOne/data.js"
+import { NNThreeInOne } from "../nnThreeInOne/index.jsx"
+import { NNTicker } from "../nnTicker/index.jsx"
+import { interpolateSpectral } from "d3-scale-chromatic"
+import { scaleLinear, scaleSequential } from "d3-scale"
+import { extent } from "d3-array"
+import data from "./data.js"
+
+// import "./style.css";
 
 const views = ['bar', 'heatmap', 'treemap']
 
@@ -15,7 +21,10 @@ const Constants = {
 }
 const { DATE, OPEN, HIGH, LOW, CLOSE, ADJCLOSE, VOLUME } = Constants
 
-export class nnThreeInOneParent extends React.Component {
+const colorScale = scaleSequential(interpolateSpectral)
+	.domain(extent(data.map(d => +d[VOLUME])))
+
+export class NNThreeInOneParent extends React.Component {
 
 	constructor(props) {
 		super(props)
@@ -64,28 +73,30 @@ export class nnThreeInOneParent extends React.Component {
 
 		return(
 			<div className="nnThreeInOneParent">	
-				<nnThreeInOne
-					data={cleanData}
-					componentHeight={this.state.componentHeight}
-					componentWidth={this.state.componentWidth}
-					view={this.state.view}
-					sizeKey={'High'}
-					colorKey={'Volume'}
-					sortKey={'Volume'}
-					label={this.state.view !== 'bar'}
-					primary={'Volume'}
-					secondary={'Date'}
-					onHover={(d) => {console.log('hovering on', d)}}
-					onClick={(d) => {console.log('clicked on', d)}}
-					style={{
-						position: "absolute",
-						top: "10px",
-						left: "10px"
-					}}
-		  	/>
-				<button className="button" onClick={this.toggle}>
-					toggle
-				</button>
+				{/*<NNThreeInOne
+									data={cleanData}
+									componentHeight={this.state.componentHeight}
+									componentWidth={this.state.componentWidth}
+									view={this.state.view}
+									sizeKey={'High'}
+									colorKey={'Volume'}
+									// colorScale={colorScale}
+									sortKey={'Volume'}
+									label={this.state.view !== 'bar'}
+									primary={'Volume'}
+									secondary={'Date'}
+									onHover={(d) => {console.log('hovering on', d)}}
+									onClick={(d) => {console.log('clicked on', d)}}
+									style={{
+										position: "absolute",
+										top: "10px",
+										left: "10px"
+									}}
+						  	/>
+								<button className="button" onClick={this.toggle}>
+									toggle
+								</button>*/}
+				<NNTicker/>
 			</div>
 		)
 	}

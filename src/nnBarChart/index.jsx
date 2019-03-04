@@ -1,6 +1,6 @@
 import React from "react"
 import { PropTypes } from "prop-types"
-import { scaleLinear, scaleTime } from "d3-scale"
+import { scaleLinear, scaleTime, scaleBand, scalePoint } from "d3-scale"
 import { extent, bisect } from "d3-array"
 import { timeFormat } from "d3-time-format"
 import { format } from "d3-format"
@@ -42,89 +42,70 @@ class Axis extends React.Component {
 	}
 }
 
-// export class NNLineChart extends React.Component {
-class NNLineChart extends React.Component {
+// export class NNBarChart extends React.Component {
+class NNBarChart extends React.Component {
 
 	_onHover(hoverOptions, event) {
 		const { dateKey, onHover } = this.props
-		const { dataSelectionKey, flatLineData, dateSet, xScale, yScale } = hoverOptions
+		const { yAxisKey, flatLineData, xScale, yScale } = hoverOptions
 
 		const { top, left } = event.target.getBoundingClientRect()
-		const xPosValue = new Date(dateSet[Math.floor(xScale.invert(event.clientX - left))])
+		const xPosIndex = Math.floor(xScale.invert(event.clientX - left))
 		const yPosValue = yScale.invert(event.clientY - top)
 
 		const closestData = flatLineData
-			.filter(d => d[dateKey].getTime() === xPosValue.getTime())
-			.reduce((t,v) =>  Math.abs(yPosValue - v[dataSelectionKey]) < Math.abs(yPosValue - t[dataSelectionKey]) ? v : t, { [dataSelectionKey] : Infinity })
+			.filter((d,i) => i === xPosIndex)
+			.reduce((t,v) =>  Math.abs(yPosValue - v[yAxisKey]) < Math.abs(yPosValue - t[yAxisKey]) ? v : t, { [yAxisKey] : Infinity })
 
 		const mouseData = {
 			data: closestData,
-			x: xScale(xPosValue),
-			y: yScale(closestData[dataSelectionKey])
+			x: xScale(xPosIndex),
+			y: yScale(closestData[yAxisKey])
 		}
 		onHover(mouseData)
 	}
 
 	render() {
-		const { data, componentHeight, componentWidth, dataKey, colorScale, colorScaleKey,
-			dateKey, dateFormat, yAxisKey, yAxisFormat, onHover, percentChange } = this.props
-
-		let transformedData
-		if (percentChange) {
-			transformedData = data.map(d => d.map(e => Object.assign({}, e, {
-					"_percentChange": (e[yAxisKey] - d[0][yAxisKey]) / d[0][yAxisKey]
-				})
-			))
-		}
-
-		const dataSelection = percentChange
-			? data.map(d => d.map(e => Object.assign({}, e, { "_percentChange": (e[yAxisKey] - d[0][yAxisKey]) / d[0][yAxisKey] }) ))
-			: data
-		const dataSelectionKey = percentChange ? "_percentChange" : yAxisKey
+		const { data, componentHeight, componentWidth, dataKey, dateKey, dateFormat,
+			yAxisKey, yAxisFormat, marginArray, translate, onHover } = this.props
 
 		// this is used to determine the entire extent of dates included in the data passed in -- in case one line 
 		// has more date values than the other
-		const flatLineData = [].concat(...(dataSelection))
+		const flatLineData = [].concat(...(data))
 		// this then returns all dates in a set to remove duplicates and find unique dates
 		const dateFormatFunc = timeFormat(dateFormat)
-		const dateSet = [...new Set(flatLineData.map(d => d[dateKey].toString()))]
-		const formattedDateSet = dateSet.map(e => dateFormatFunc(new Date(e)))
+		const dateSet = [...new Set(flatLineData.map(d => dateFormatFunc(d[dateKey]).toString()))]
 
-		const margin = { top: 10, bottom: 30, left: 30, right: 10 }
+		const margin = { top: marginArray[0], right: marginArray[1], bottom: marginArray[2], left: marginArray[3] }
 		const chartWidth = componentWidth - margin.left - margin.right
 		const chartHeight = componentHeight - margin.top - margin.bottom
 
 		const xScale = scaleLinear()
 			.domain([0, dateSet.length])
 			.rangeRound([0, chartWidth])
+
 		const yScale = scaleLinear()
-			.domain(extent(flatLineData, d => d[dataSelectionKey]))
+			.domain(extent(flatLineData, d => d[yAxisKey]))
 			.range([chartHeight, 0])
 			.nice()
 
-		const path = line()
-			.x((d,i) => xScale(i) + margin.left)
-			.y(d => yScale(d[dataSelectionKey]) + margin.top)
-			.curve(curveMonotoneX)
-
 		const hoverOptions = {
-			dataSelectionKey,
+			yAxisKey,
 			flatLineData,
-			dateSet,
 			xScale,
 			yScale
 		}
 
 		return(
-			<g className="NNLineChart"> 
+			<g className="NNBarChart" transform={`translate(${this.props.translate[0]},${this.props.translate[1]})`}> 
 				<g>
 					<Axis 
 						orient={'Bottom'}
 						scale={xScale}
-						format={d => formattedDateSet[d]}
+						format={d => dateSet[d]}
 						ticks={3}
-						tickSize={chartHeight + 5}
-						translate={`translate(${margin.left}, ${margin.top})`}/>
+						tickSize={5}
+						translate={`translate(${margin.left}, ${chartHeight + margin.top})`}/>
 					<Axis 
 						orient={'Left'}
 						scale={yScale}
@@ -133,13 +114,20 @@ class NNLineChart extends React.Component {
 						tickSize={chartWidth}
 						translate={`translate(${componentWidth - margin.right}, ${margin.top})`}/>
 				</g>
-				{dataSelection.map(d =>
-					<path
-						key={d[0][colorScaleKey]}
-						stroke={colorScale(d[0][colorScaleKey])}
-						d={path(d)}
-					/>
-				)}
+				{data.map((d,i)=> {
+					return <rect
+						className={'bar'}
+						key={i}
+						width={(chartWidth / data.length)*0.5}
+						height={yScale(d[yAxisKey])}
+						transform={
+							`translate(
+								${margin.left + xScale(i)},
+								${margin.top + chartHeight - yScale(d[yAxisKey]) })
+							`}
+					>	
+					</rect>}
+					)}
 				<rect
 					width={chartWidth}
 					height={chartHeight}
@@ -152,26 +140,25 @@ class NNLineChart extends React.Component {
 	}
 }
 
-NNLineChart.propTypes = {
-	data: PropTypes.arrayOf(PropTypes.array).isRequired,
+NNBarChart.propTypes = {
+	data: PropTypes.array.isRequired,
 	componentHeight: PropTypes.number.isRequired,
 	componentWidth: PropTypes.number.isRequired,
-	colorScale: PropTypes.func.isRequired,
-	colorScaleKey: PropTypes.string.isRequired,
 	dateKey: PropTypes.string.isRequired,
 	dateFormat: PropTypes.string,
 	yAxisKey: PropTypes.string.isRequired,
 	yAxisFormat: PropTypes.string,
-	onHover: PropTypes.func,
-	percentChange: PropTypes.bool,
 	marginArray: PropTypes.array,
+	translate: PropTypes.array,
+	onHover: PropTypes.func,
 }
 
-NNLineChart.defaultProps = {
+NNBarChart.defaultProps = {
 	dateFormat: "%B %d, %Y",
-	yAxisFormat: ".0%",
-	onHover: (d) => {console.log('hover data:', d)},
-	percentChange: true,
+	yAxisFormat: "~s",
 	marginArray: [10, 10, 30, 30],
+	translate: [0,0],
+	onHover: (d) => {console.log('hover data:', d)},
 }
-module.exports = NNLineChart
+
+module.exports = NNBarChart

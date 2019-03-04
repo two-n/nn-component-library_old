@@ -1,22 +1,29 @@
 {
   "name": "@two-n/nn-component-library",
-  "version": "1.0.9",
+  "version": "1.0.12",
   "description": "Reusable components for data visualization produced by TWO-N",
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "files": [ "dist", "README.md" ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-dev": "browserify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify test/main.jsx -o test/bundle.js",
+    "build-dev": "browserify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify src/main.jsx -o src/bundle.js",
     "build": "rm -rf dist && babel src --out-dir dist --presets=@babel/preset-env,@babel/preset-react",
     "scss": "node-sass \"src/*/*.scss\" -o \"src/*/\"",
     "scss-dist-three": "node-sass \"src/nnThreeInOne/style.scss\" -o \"dist/nnThreeInOne/\"",
     "scss-dist-line": "node-sass \"src/nnLineChart/style.scss\" -o \"dist/nnLineChart/\"",
     "scss-dist-slide": "node-sass \"src/nnSlider/style.scss\" -o \"dist/nnSlider/\"",
-    "watch-js": "watchify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify test/main.jsx -d -o test/bundle.js",
+    "scss-dist-bar": "node-sass \"src/nnBarChart/style.scss\" -o \"dist/nnBarChart/\"",
+    "scss-src-three": "node-sass \"src/nnThreeInOne/style.scss\" -o \"src/nnThreeInOne/\"",
+    "scss-src-line": "node-sass \"src/nnLineChart/style.scss\" -o \"src/nnLineChart/\"",
+    "scss-src-bar": "node-sass \"src/nnBarChart/style.scss\" -o \"src/nnBarChart/\"",
+    "watch-js": "watchify -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] -t cssify src/main.jsx -d -o src/bundle.js",
     "watch": "npm run watch-sass & npm run watch-js"
   },
   "repository": {

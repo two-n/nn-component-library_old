@@ -1,16 +1,16 @@
-.nnSliderComponent {
+.NNSliderComponent {
   width: 100%;
   /*display: block;*/
   $nn-component-height: 8;
 
-  .nnSliderTrack {
+  .NNSliderTrack {
     width: 100%;
     height: $nn-component-height * 1px;
     border: 1px solid #888888;
     border-radius: $nn-component-height / 2 * 1px;
     position: relative;
 
-    .nnSliderProgress {
+    .NNSliderProgress {
       position: absolute;
       left: 0px;
       height: $nn-component-height - 2px;
@@ -18,7 +18,7 @@
       background-color: #00ffff;
     }
 
-    .nnSliderThumb {
+    .NNSliderThumb {
       $nn-thumb-spillover: 4;
       $nn-thumb-dimension: $nn-component-height + (2 * $nn-thumb-spillover);
       position: absolute;
